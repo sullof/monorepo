@@ -1,6 +1,6 @@
 import { signMessage, ZERO_ADDRESS } from "@counterfactual/test-utils";
 import * as ethers from "ethers";
-import * as artifacts from "./buildArtifacts";
+import * as contracts from "./cfContracts";
 import { Contract } from "./contract";
 import { Multisig } from "./multisig";
 import { abiEncodingForStruct, encodeStruct } from "./structEncoding";
@@ -59,7 +59,7 @@ export class StateChannel {
   public async deploy(sender: ethers.Wallet, registry: ethers.Contract) {
     const appHash = keccak256(encodeStruct(appEncoding, this.app));
     const termsHash = keccak256(encodeStruct(termsEncoding, this.terms));
-    this.contract = await artifacts.StateChannel.deployViaRegistry(
+    this.contract = await contracts.StateChannel.deployViaRegistry(
       sender,
       registry,
       [

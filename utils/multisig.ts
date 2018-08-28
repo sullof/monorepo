@@ -4,7 +4,7 @@ import {
   signMessage
 } from "@counterfactual/test-utils";
 import * as ethers from "ethers";
-import { MinimumViableMultisig } from "./buildArtifacts";
+import { MinimumViableMultisig } from "./cfContracts";
 
 const enum Operation {
   Call = 0,

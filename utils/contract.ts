@@ -1,5 +1,7 @@
 import { HIGH_GAS_LIMIT } from "@counterfactual/test-utils";
 import * as ethers from "ethers";
+import { TruffleContract } from "truffle";
+import { loadBuildArtifact, loadContractAddress } from "./artifacts";
 
 const { solidityKeccak256 } = ethers.utils;
 
@@ -24,46 +26,38 @@ export class AbstractContract {
    * @param links Optional AbstractContract libraries to link.
    * @returns Truffle artifact wrapped in an AbstractContract.
    */
-  public static loadBuildArtifact(
+  public static loadArtifact(
     artifactName: string,
-    links?: { [name: string]: AbstractContract }
+    links?: AbstractContract[]
   ): AbstractContract {
-    // TODO: Load build artifacts manually once we move away from Truffle
-    // TODO: Load production artifacts when imported
-    const truffleContract: BuildArtifact = artifacts.require(artifactName);
-    return AbstractContract.fromBuildArtifact(truffleContract, links);
+    const artifact = loadBuildArtifact(artifactName);
+    return new AbstractContract(artifact, links);
   }
 
-  /**
-   * Wrap build artifact in abstract contract
-   * @param buildArtifact Truffle contract to wrap
-   * @param links Optional AbstractContract libraries to link.
-   * @returns Truffle artifact wrapped in an AbstractContract.
-   */
-  public static fromBuildArtifact(
-    buildArtifact: BuildArtifact,
-    links?: { [name: string]: AbstractContract }
-  ): AbstractContract {
-    return new AbstractContract(
-      buildArtifact.abi,
-      buildArtifact.bytecode,
-      buildArtifact.networks,
-      links
-    );
-  }
+  private readonly deployedAddresses: { [networkId: number]: string } = {};
 
   /**
-   * @param abi ABI of the abstract contract
-   * @param bytecode Binary of the abstract contract
-   * @param networks Network mapping of deployed addresses
+   * @param artifact
    * @param links
    */
   constructor(
-    readonly abi: string[] | string,
-    readonly bytecode: string,
-    readonly networks: NetworkMapping,
-    readonly links?: { [contractName: string]: AbstractContract }
+    readonly artifact: BuildArtifact,
+    readonly links?: AbstractContract[]
   ) {}
+
+  public async migrate(deployer: TruffleDeployer) {
+    const { abi, contractName } = this.artifact;
+
+    const networkId = deployer.network_id;
+    const bytecode = this.generateLinkedBytecode(networkId);
+    const truffleContract = new TruffleContract({
+      abi,
+      contractName,
+      bytecode
+    });
+    await deployer.deploy(truffleContract);
+    this.deployedAddresses[networkId] = truffleContract.address;
+  }
 
   /**
    * Get the deployed singleton instance of this abstract contract, if it exists
@@ -76,7 +70,7 @@ export class AbstractContract {
     }
     const networkId = (await signer.provider.getNetwork()).chainId;
     const address = this.getDeployedAddress(networkId);
-    return new Contract(address, this.abi, signer);
+    return new Contract(address, this.artifact.abi, signer);
   }
 
   /**
@@ -95,7 +89,7 @@ export class AbstractContract {
 
     const networkId = (await signer.provider.getNetwork()).chainId;
     const bytecode = this.generateLinkedBytecode(networkId);
-    const contract = new Contract("", this.abi, signer);
+    const contract = new Contract("", this.artifact.abi, signer);
     return contract.deploy(bytecode, ...(args || []));
   }
 
@@ -109,7 +103,7 @@ export class AbstractContract {
     signer: ethers.types.Signer,
     address: string
   ): Promise<Contract> {
-    return new Contract(address, this.abi, signer);
+    return new Contract(address, this.artifact.abi, signer);
   }
 
   /**
@@ -138,10 +132,9 @@ export class AbstractContract {
     }
     const networkId = (await signer.provider.getNetwork()).chainId;
     const bytecode = this.generateLinkedBytecode(networkId);
-    const initcode = new ethers.Interface(this.abi).deployFunction.encode(
-      bytecode,
-      args || []
-    );
+    const initcode = new ethers.Interface(
+      this.artifact.abi
+    ).deployFunction.encode(bytecode, args || []);
     await registry.functions.deploy(initcode, salt, HIGH_GAS_LIMIT);
     const cfAddress = solidityKeccak256(
       ["bytes1", "bytes", "uint256"],
@@ -149,7 +142,7 @@ export class AbstractContract {
     );
 
     const address = await registry.functions.resolver(cfAddress);
-    const contract = new Contract(address, this.abi, signer);
+    const contract = new Contract(address, this.artifact.abi, signer);
     contract.cfAddress = cfAddress;
     contract.salt = salt;
     contract.registry = registry;
@@ -157,25 +150,31 @@ export class AbstractContract {
   }
 
   private generateLinkedBytecode(networkId: number): string {
-    if (!this.links) {
-      throw new Error("Nothing to link");
-    }
-    let bytecode = this.bytecode;
-    for (const name of Object.keys(this.links)) {
-      const library = this.links[name];
-      const regex = new RegExp(`__${name}_+`, "g");
-      const address = library.getDeployedAddress(networkId);
-      const addressHex = address.replace("0x", "");
-      bytecode = bytecode.replace(regex, addressHex);
+    let { bytecode } = this.artifact;
+    if (this.links) {
+      for (const library of this.links) {
+        const regex = new RegExp(`__${library.artifact.contractName}_+`, "g");
+        const address = library.getDeployedAddress(networkId);
+        const addressHex = address.replace("0x", "");
+        bytecode = bytecode.replace(regex, addressHex);
+      }
     }
     return bytecode;
   }
 
   private getDeployedAddress(networkId: number): string {
-    const info = this.networks[networkId];
-    if (!info) {
-      throw new Error(`Abstract contract not deployed on network ${networkId}`);
+    if (!this.deployedAddresses[networkId]) {
+      const address = loadContractAddress(
+        networkId,
+        this.artifact.contractName
+      );
+      if (!address) {
+        throw new Error(
+          `Abstract contract not deployed on network ${networkId}`
+        );
+      }
+      this.deployedAddresses[networkId] = address;
     }
-    return info.address;
+    return this.deployedAddresses[networkId];
   }
 }

@@ -49,9 +49,9 @@ enum Player {
 }
 
 const { parseEther } = ethers.utils;
-const CommitRevealApp = AbstractContract.loadBuildArtifact("CommitRevealApp", {
+const CommitRevealApp = AbstractContract.loadArtifact("CommitRevealApp", [
   StaticCall
-});
+]);
 
 const { provider, unlockedAccount: masterAccount } = setupTestEnv(web3);
 const appStateEncoding = abiEncodingForStruct(`
