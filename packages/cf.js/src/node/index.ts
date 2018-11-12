@@ -17,7 +17,6 @@ export enum ActionName {
   RECEIVE_IO = "receiveIo",
   QUERY = "query",
   CONNECT = "connect",
-  INSTALL_METACHANNEL_APP = "installMetachannelApp"
 }
 
 // TODO: document what this is
