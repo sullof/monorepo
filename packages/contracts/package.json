@@ -44,7 +44,7 @@
     "chai-bignumber": "^2.0.2",
     "chai-string": "^1.5.0",
     "eth-gas-reporter": "0.1.12",
-    "ethers": "^4.0.4",
+    "ethers": "^4.0.11",
     "ganache-cli": "^6.1.8",
     "lint-staged": "8.0.4",
     "openzeppelin-eth": "^2.0.2",
