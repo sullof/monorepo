@@ -86,14 +86,9 @@ export class InstructionExecutor implements Observable {
     this.execute(new Action(message.requestId, message.action, message, true));
   }
 
-  public receive(msg: cf.node.ClientActionMessage): cf.node.WalletResponse {
+  public receive(msg: cf.node.ClientActionMessage) {
     const action = new Action(msg.requestId, msg.action, msg);
     this.execute(action);
-
-    return new cf.node.WalletResponse(
-      action.requestId,
-      cf.node.ResponseStatus.STARTED
-    );
   }
 
   public async execute(action: Action) {
