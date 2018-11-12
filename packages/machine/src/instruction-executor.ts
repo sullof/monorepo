@@ -76,7 +76,7 @@ export class InstructionExecutor implements Observable {
         entry.clientMessage,
         this
       );
-      execution.results = entry.results;
+      execution.results2 = entry.results;
       action.execution = execution;
       return execution;
     });
@@ -100,7 +100,7 @@ export class InstructionExecutor implements Observable {
       data: {
         requestId: action.requestId,
         name: action.name,
-        results: execution.results,
+        results: execution.results2,
         clientMessage: action.clientMessage
       }
     });
@@ -144,7 +144,8 @@ export class InstructionExecutor implements Observable {
 }
 
 export class Context {
-  public results: OpCodeResult[] = Object.create(null);
+  public results2: OpCodeResult[] = [];
+  public intermediateResults: { [s:string] : any } = {};
 
   // todo(ldct): the following fields are very special-purpose and only accessed
   // in one place; it would be nice to get rid of them
