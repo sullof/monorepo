@@ -61,7 +61,7 @@ export class InstructionExecutor implements Observable {
   /**
    * @returns all unfinished protocol executions read from the db.
    */
-  public buildExecutionsFromLog(log: Log): ActionExecution[] {
+  private buildExecutionsFromLog(log: Log): ActionExecution[] {
     return Object.keys(log).map(key => {
       const entry = log[key];
       const action = new Action(

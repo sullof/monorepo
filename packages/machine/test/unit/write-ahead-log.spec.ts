@@ -92,7 +92,8 @@ function makeExecutions(instructionExecutor: InstructionExecutor): ActionExecuti
 }
 
 function validatelog(log: WriteAheadLog, instructionExecutor: InstructionExecutor) {
-  const executions = instructionExecutor.buildExecutionsFromLog(log.readLog());
+  // access private method
+  const executions = instructionExecutor["buildExecutionsFromLog"](log.readLog());
   const expectedExecutions = makeExecutions(instructionExecutor);
   for (let k = 0; k < expectedExecutions.length; k += 1) {
     const expected = expectedExecutions[k];
