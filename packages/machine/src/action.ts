@@ -79,7 +79,7 @@ export class ActionExecution {
     );
   }
 
-  public createContext(): Context {
+  private createContext(): Context {
     return {
       results: this.results,
       instructionPointer: this.instructionPointer,
@@ -90,7 +90,7 @@ export class ActionExecution {
     };
   }
 
-  public async next(): Promise<{ done: boolean; value: number }> {
+  private async next(): Promise<{ done: boolean; value: number }> {
     if (this.instructionPointer === this.action.instructions.length) {
       return { done: true, value: 0 };
     }

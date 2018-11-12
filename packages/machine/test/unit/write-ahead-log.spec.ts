@@ -17,7 +17,7 @@ describe("Write ahead log", () => {
 
     makeExecutions(instructionExecutor).forEach(execution => {
       const internalMessage = execution["createInternalMessage"](); // access private method
-      const context = execution.createContext();
+      const context = execution["createContext"](); // access private method
       log1.write(internalMessage, context);
     });
 
