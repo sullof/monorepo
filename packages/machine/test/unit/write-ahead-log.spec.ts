@@ -1,6 +1,6 @@
 import * as cf from "@counterfactual/cf.js";
 
-import { Action, ActionExecution } from "../../src/action";
+import { ActionExecution, instructionGroupFromProtocolName } from "../../src/action";
 import { InstructionExecutorConfig, InstructionExecutor } from "../../src/instruction-executor";
 import {
   SimpleStringMapSyncDB,
@@ -80,9 +80,8 @@ function makeExecutions(instructionExecutor: InstructionExecutor): ActionExecuti
 
   for (let k = 0; k < requestIds.length; k += 1) {
     const execution = new ActionExecution(
-      new Action(requestIds[k], actions[k], msgs[k], isAckSide[k]),
       actions[k],
-      new Action(requestIds[k], actions[k], msgs[k], isAckSide[k]).instructions,
+      instructionGroupFromProtocolName(actions[k], isAckSide[k]),
       instructionPointers[k],
       msgs[k],
       instructionExecutor,

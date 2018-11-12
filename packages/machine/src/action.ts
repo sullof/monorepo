@@ -8,52 +8,18 @@ if (!Symbol.asyncIterator) {
   (Symbol as any).asyncIterator = Symbol.for("Symbol.asyncIterator");
 }
 
-export class Action {
-  public name: cf.node.ActionName;
-  public requestId: string;
-  public clientMessage: cf.node.ClientActionMessage;
-  public execution: ActionExecution = Object.create(null);
-  public instructions: Opcode[];
-  public isAckSide: boolean;
-
-  constructor(
-    id: string,
-    action: cf.node.ActionName,
-    clientMessage: cf.node.ClientActionMessage,
-    isAckSide: boolean = false
-  ) {
-    this.requestId = id;
-    this.clientMessage = clientMessage;
-    this.name = action;
-    this.isAckSide = isAckSide;
-
-    if (isAckSide) {
-      this.instructions = ackInstructions[action];
-    } else {
-      this.instructions = instructions[action];
-    }
-  }
-
-  public makeExecution(
-    instructionExecutor: InstructionExecutor
-  ): ActionExecution {
-    const exe = new ActionExecution(
-      this,
-      this.name,
-      this.instructions,
-      0,
-      this.clientMessage,
-      instructionExecutor,
-      this.isAckSide,
-      this.requestId
-    );
-    this.execution = exe;
-    return exe;
+export function instructionGroupFromProtocolName(
+  protocolName: cf.node.ActionName,
+  isAckSide: boolean
+) : Opcode[] {
+  if (isAckSide) {
+    return ackInstructions[protocolName];
+  } else {
+    return instructions[protocolName];
   }
 }
 
 export class ActionExecution {
-  public action2: Action;
   public actionName: cf.node.ActionName;
   public instructions: Opcode[];
   public instructionPointer: number;
@@ -65,7 +31,6 @@ export class ActionExecution {
   public requestId: string;
 
   constructor(
-    action2: Action,
     actionName: cf.node.ActionName,
     instructions: Opcode[],
     instructionPointer: number,
@@ -76,7 +41,6 @@ export class ActionExecution {
     results2: OpCodeResult[] = [],
     intermediateResults = {}
   ) {
-    this.action2 = action2;
     this.actionName = actionName;
     this.instructions = instructions;
     this.instructionPointer = instructionPointer;
