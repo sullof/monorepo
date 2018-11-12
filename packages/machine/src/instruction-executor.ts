@@ -118,20 +118,20 @@ export class InstructionExecutor implements Observable {
       // https://github.com/counterfactual/monorepo/issues/123
       for await (val of execution) {
       }
-      this.sendResponse(execution.action2, cf.node.ResponseStatus.COMPLETED);
+      this.sendResponse(execution.requestId, cf.node.ResponseStatus.COMPLETED);
     } catch (e) {
       console.error(e);
-      this.sendResponse(execution.action2, cf.node.ResponseStatus.ERROR);
+      this.sendResponse(execution.requestId, cf.node.ResponseStatus.ERROR);
     }
   }
 
   public sendResponse(
-    action: Action,
+    requestId: string,
     status: cf.node.ResponseStatus
   ) {
 
     this.responseHandler.sendResponse(
-      new cf.node.Response(action.requestId, status)
+      new cf.node.Response(requestId, status)
     );
   }
 

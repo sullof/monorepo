@@ -104,7 +104,7 @@ function validatelog(log: WriteAheadLog, instructionExecutor: InstructionExecuto
     const received = executions[k];
     // note: only check the fields we construct in makeExecutions since we
     //       don't actually set them all there
-    expect(received.action2.requestId).toEqual(expected.action2.requestId);
+    expect(received.requestId).toEqual(expected.requestId);
     expect(received.actionName).toEqual(expected.actionName);
     expect(received.isAckSide).toEqual(expected.isAckSide);
     expect(JSON.stringify(received.clientMessage)).toEqual(
