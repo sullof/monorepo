@@ -114,23 +114,23 @@ export class InstructionExecutor implements Observable {
       // https://github.com/counterfactual/monorepo/issues/123
       for await (val of execution) {
       }
-      this.sendResponse(execution, cf.node.ResponseStatus.COMPLETED);
+      this.sendResponse(execution.action, cf.node.ResponseStatus.COMPLETED);
     } catch (e) {
       console.error(e);
-      this.sendResponse(execution, cf.node.ResponseStatus.ERROR);
+      this.sendResponse(execution.action, cf.node.ResponseStatus.ERROR);
     }
   }
 
   public sendResponse(
-    execution: ActionExecution,
+    action: Action,
     status: cf.node.ResponseStatus
   ) {
-    if (execution.action.isAckSide) {
+    if (action.isAckSide) {
       return;
     }
 
     this.responseHandler.sendResponse(
-      new cf.node.Response(execution.action.requestId, status)
+      new cf.node.Response(action.requestId, status)
     );
   }
 

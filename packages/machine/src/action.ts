@@ -93,6 +93,8 @@ export class ActionExecution {
     };
   }
 
+  // support https://github.com/tc39/proposal-async-iteration syntax
+
   private async next(): Promise<{ done: boolean; value: number }> {
     if (this.instructionPointer === this.action.instructions.length) {
       return { done: true, value: 0 };
