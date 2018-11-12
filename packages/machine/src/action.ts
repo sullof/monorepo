@@ -69,8 +69,7 @@ export class ActionExecution {
     this.results = results;
   }
 
-  // Public only for test purposes
-  public createInternalMessage(): InternalMessage {
+  private createInternalMessage(): InternalMessage {
     const op = this.action.instructions[this.instructionPointer];
     return new InternalMessage(
       this.action.name,

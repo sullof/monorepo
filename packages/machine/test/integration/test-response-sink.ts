@@ -120,7 +120,7 @@ export class TestResponseSink implements cf.node.ResponseSink {
     const promise = new Promise<cf.node.WalletResponse>((resolve, reject) => {
       this.requests[msg.requestId] = resolve;
     });
-    this.instructionExecutor.receive(msg);
+    this.instructionExecutor.receiveClientActionMessage(msg);
     return promise;
   }
 
