@@ -39,9 +39,12 @@ export class Action {
   ): ActionExecution {
     const exe = new ActionExecution(
       this,
+      this.name,
+      this.instructions,
       0,
       this.clientMessage,
-      instructionExecutor
+      instructionExecutor,
+      this.isAckSide
     );
     this.execution = exe;
     return exe;
@@ -50,34 +53,44 @@ export class Action {
 
 export class ActionExecution {
   public action: Action;
+  public actionName: cf.node.ActionName;
+  public instructions: Opcode[];
   public instructionPointer: number;
   public clientMessage: cf.node.ClientActionMessage;
   public instructionExecutor: InstructionExecutor;
   public results2: OpCodeResult[];
+  public isAckSide: boolean;
   public intermediateResults: { [s: string] : any };
 
   constructor(
     action: Action,
-    instruction: Opcode,
+    actionName: cf.node.ActionName,
+    instructions: Opcode[],
+    instructionPointer: number,
     clientMessage: cf.node.ClientActionMessage,
     instructionExecutor: InstructionExecutor,
-    results2: OpCodeResult[] = []
+    isAckSide: boolean,
+    results2: OpCodeResult[] = [],
+    intermediateResults = {}
   ) {
     this.action = action;
-    this.instructionPointer = instruction;
+    this.actionName = actionName;
+    this.instructions = instructions;
+    this.instructionPointer = instructionPointer;
     this.clientMessage = clientMessage;
     this.instructionExecutor = instructionExecutor;
+    this.isAckSide = isAckSide;
     this.results2 = results2;
     this.intermediateResults = intermediateResults;
   }
 
   private createInternalMessage(): InternalMessage {
-    const op = this.action.instructions[this.instructionPointer];
+    const op = this.instructions[this.instructionPointer];
     return new InternalMessage(
-      this.action.name,
+      this.actionName,
       op,
       this.clientMessage,
-      this.action.isAckSide
+      this.isAckSide
     );
   }
 
@@ -96,7 +109,7 @@ export class ActionExecution {
   // support https://github.com/tc39/proposal-async-iteration syntax
 
   private async next(): Promise<{ done: boolean; value: number }> {
-    if (this.instructionPointer === this.action.instructions.length) {
+    if (this.instructionPointer === this.instructions.length) {
       return { done: true, value: 0 };
     }
 

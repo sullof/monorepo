@@ -72,9 +72,12 @@ export class InstructionExecutor implements Observable {
       );
       const execution = new ActionExecution(
         action,
+        entry.actionName,
+        action.instructions,
         entry.instructionPointer,
         entry.clientMessage,
-        this
+        this,
+        entry.isAckSide
       );
       execution.results2 = entry.results;
       action.execution = execution;
@@ -125,9 +128,6 @@ export class InstructionExecutor implements Observable {
     action: Action,
     status: cf.node.ResponseStatus
   ) {
-    if (action.isAckSide) {
-      return;
-    }
 
     this.responseHandler.sendResponse(
       new cf.node.Response(action.requestId, status)

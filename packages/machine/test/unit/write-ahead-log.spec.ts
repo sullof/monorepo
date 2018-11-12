@@ -81,9 +81,12 @@ function makeExecutions(instructionExecutor: InstructionExecutor): ActionExecuti
   for (let k = 0; k < requestIds.length; k += 1) {
     const execution = new ActionExecution(
       new Action(requestIds[k], actions[k], msgs[k], isAckSide[k]),
+      actions[k],
+      new Action(requestIds[k], actions[k], msgs[k], isAckSide[k]).instructions,
       instructionPointers[k],
       msgs[k],
-      instructionExecutor
+      instructionExecutor,
+      isAckSide[k],
     );
     executions.push(execution);
   }
