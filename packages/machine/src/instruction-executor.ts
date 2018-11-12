@@ -77,7 +77,8 @@ export class InstructionExecutor implements Observable {
         entry.instructionPointer,
         entry.clientMessage,
         this,
-        entry.isAckSide
+        entry.isAckSide,
+        entry.requestId
       );
       execution.results2 = entry.results;
       action.execution = execution;
@@ -117,10 +118,10 @@ export class InstructionExecutor implements Observable {
       // https://github.com/counterfactual/monorepo/issues/123
       for await (val of execution) {
       }
-      this.sendResponse(execution.action, cf.node.ResponseStatus.COMPLETED);
+      this.sendResponse(execution.action2, cf.node.ResponseStatus.COMPLETED);
     } catch (e) {
       console.error(e);
-      this.sendResponse(execution.action, cf.node.ResponseStatus.ERROR);
+      this.sendResponse(execution.action2, cf.node.ResponseStatus.ERROR);
     }
   }
 

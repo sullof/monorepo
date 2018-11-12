@@ -44,7 +44,8 @@ export class Action {
       0,
       this.clientMessage,
       instructionExecutor,
-      this.isAckSide
+      this.isAckSide,
+      this.requestId
     );
     this.execution = exe;
     return exe;
@@ -52,7 +53,7 @@ export class Action {
 }
 
 export class ActionExecution {
-  public action: Action;
+  public action2: Action;
   public actionName: cf.node.ActionName;
   public instructions: Opcode[];
   public instructionPointer: number;
@@ -61,25 +62,28 @@ export class ActionExecution {
   public results2: OpCodeResult[];
   public isAckSide: boolean;
   public intermediateResults: { [s: string] : any };
+  public requestId: string;
 
   constructor(
-    action: Action,
+    action2: Action,
     actionName: cf.node.ActionName,
     instructions: Opcode[],
     instructionPointer: number,
     clientMessage: cf.node.ClientActionMessage,
     instructionExecutor: InstructionExecutor,
     isAckSide: boolean,
+    requestId: string,
     results2: OpCodeResult[] = [],
     intermediateResults = {}
   ) {
-    this.action = action;
+    this.action2 = action2;
     this.actionName = actionName;
     this.instructions = instructions;
     this.instructionPointer = instructionPointer;
     this.clientMessage = clientMessage;
     this.instructionExecutor = instructionExecutor;
     this.isAckSide = isAckSide;
+    this.requestId = requestId;
     this.results2 = results2;
     this.intermediateResults = intermediateResults;
   }
