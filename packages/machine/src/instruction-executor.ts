@@ -87,10 +87,6 @@ export class InstructionExecutor implements Observable {
   }
 
   public receive(msg: cf.node.ClientActionMessage): cf.node.WalletResponse {
-    if (!this.validateMessage(msg)) {
-      throw new Error("Cannot receive invalid message");
-    }
-
     const action = new Action(msg.requestId, msg.action, msg);
     this.execute(action);
 
@@ -98,11 +94,6 @@ export class InstructionExecutor implements Observable {
       action.requestId,
       cf.node.ResponseStatus.STARTED
     );
-  }
-
-  public validateMessage(msg: cf.node.ClientActionMessage) {
-    // TODO;
-    return true;
   }
 
   public async execute(action: Action) {
