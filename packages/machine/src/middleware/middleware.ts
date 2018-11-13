@@ -39,12 +39,16 @@ export class Middleware {
     [Opcode.OP_SIGN]: [],
     [Opcode.OP_SIGN_VALIDATE]: [],
     [Opcode.STATE_TRANSITION_COMMIT]: [],
-    [Opcode.STATE_TRANSITION_PROPOSE]: [{
-      scope: Opcode.STATE_TRANSITION_PROPOSE,
-      method: (message, next, context) => {
-        return StateTransition.propose(message, next, context, this.nodeState);
+    [Opcode.STATE_TRANSITION_PROPOSE]: [
+      {
+        scope: Opcode.STATE_TRANSITION_PROPOSE,
+        method: (message, next, context) => {
+          const proposal = StateTransition.propose(message, next, context, this.nodeState);
+          context.intermediateResults.proposedStateTransition = proposal;
+          return proposal;
+        }
       }
-    }]
+    ]
   };
 
   constructor(readonly nodeState: NodeState, opGenerator: OpGenerator) {
