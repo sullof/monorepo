@@ -23,10 +23,13 @@ export class Middleware {
    */
   public middlewares: InstructionMiddlewares = {
     [Opcode.ALL]: [],
-    [Opcode.IO_PREPARE_SEND]: [{
-      scope: Opcode.IO_PREPARE_SEND,
-      method: (internalMessage, next, context) => NextMsgGenerator.generate(internalMessage, context)
-    }],
+    [Opcode.IO_PREPARE_SEND]: [
+      {
+        scope: Opcode.IO_PREPARE_SEND,
+        method: (internalMessage, next, context) =>
+          NextMsgGenerator.generate(internalMessage, context)
+      }
+    ],
     [Opcode.IO_SEND]: [],
     [Opcode.IO_WAIT]: [],
     [Opcode.KEY_GENERATE]: [],
@@ -126,10 +129,7 @@ export abstract class OpGenerator {
 }
 
 export class NextMsgGenerator {
-  public static generate(
-    internalMessage: InternalMessage,
-    context: Context
-  ) {
+  public static generate(internalMessage: InternalMessage, context: Context) {
     const signature = NextMsgGenerator.signature(internalMessage, context);
     const lastMsg = NextMsgGenerator.lastClientMsg(internalMessage, context);
     const msg: cf.node.ClientActionMessage = {

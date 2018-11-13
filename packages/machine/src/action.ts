@@ -11,12 +11,11 @@ if (!Symbol.asyncIterator) {
 export function instructionGroupFromProtocolName(
   protocolName: cf.node.ActionName,
   isAckSide: boolean
-) : Opcode[] {
+): Opcode[] {
   if (isAckSide) {
     return ackInstructions[protocolName];
-  } else {
-    return instructions[protocolName];
   }
+  return instructions[protocolName];
 }
 
 export class ActionExecution {
@@ -99,7 +98,7 @@ export class ActionExecution {
 
       return { value, done: false };
     } catch (e) {
-      throw Error('');
+      throw Error("");
       throw Error(
         `While executing op ${Opcode[internalMessage.opCode]} at seq ${
           this.clientMessage.seq
