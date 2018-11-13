@@ -110,16 +110,14 @@ export class IframeIoProvider {
     next: Function,
     context: machine.instructionExecutor.Context
   ) {
-    const msg = machine.middleware.getLastResult(
-      machine.instructions.Opcode.IO_PREPARE_SEND,
-      context.results2
-    );
-    const value = msg.value;
-
+    const msg = context.intermediateResults.outbox!
+    if (msg === undefined) {
+      throw Error("tried to send undefined message");
+    }
     if (this.clientHandlesIO) {
-      this.user.sendIoMessageToClient(value);
+      this.user.sendIoMessageToClient(msg);
     } else {
-      this.peer.receiveMessageFromPeer(value);
+      this.peer.receiveMessageFromPeer(msg);
     }
   }
 
