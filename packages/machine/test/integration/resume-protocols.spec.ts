@@ -2,7 +2,7 @@ import * as cf from "@counterfactual/cf.js";
 import { ethers } from "ethers";
 
 import { Context } from "../../src/instruction-executor";
-import { Opcode, instructions } from "../../src/instructions";
+import { instructions, Opcode } from "../../src/instructions";
 import { EthOpGenerator } from "../../src/middleware/protocol-operation/op-generator";
 import { StateTransition } from "../../src/middleware/state-transition/state-transition";
 import { InternalMessage } from "../../src/types";
@@ -135,7 +135,7 @@ class ResumeFirstInstructionTest extends SetupProtocolTestCase {
           message,
           next,
           context,
-          peer.instructionExecutor.nodeState
+          peer.instructionExecutor.node
         );
       }
     );
@@ -173,9 +173,7 @@ class ResumeSecondInstructionTest extends SetupProtocolTestCase {
 
     // override the existing STATE_TRANSITION_PROPOSE middleware so we can
     // error out if needed
-    peer.instructionExecutor.middleware.middlewares[
-      Opcode.OP_GENERATE
-    ] = [];
+    peer.instructionExecutor.middleware.middlewares[Opcode.OP_GENERATE] = [];
     peer.instructionExecutor.middleware.add(
       Opcode.OP_GENERATE,
       async (message: InternalMessage, next: Function, context: Context) => {
@@ -187,7 +185,7 @@ class ResumeSecondInstructionTest extends SetupProtocolTestCase {
           message,
           next,
           context,
-          peer.instructionExecutor.nodeState
+          peer.instructionExecutor.node
         );
       }
     );
@@ -238,7 +236,7 @@ class ResumeLastInstructionTest extends SetupProtocolTestCase {
           message,
           next,
           context,
-          peer.instructionExecutor.nodeState
+          peer.instructionExecutor.node
         );
       }
     );

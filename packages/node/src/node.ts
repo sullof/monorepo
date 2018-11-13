@@ -2,12 +2,9 @@ import * as cf from "@counterfactual/cf.js";
 import lodash from "lodash";
 
 /**
- * // TODO: this can still be named better
- * NodeState encapsulates the state of all the channels in the context of a node.
- * It is not named InstructionExecutorNodeState because the InstructionExecutor is
- * _only_ responsible for executing instructions and is inherently stateless.
+ * Node encapsulates the state of all the channels in the context of a node.
  */
-export class NodeState {
+export class Node {
   public channelStates: cf.channel.StateChannelInfos;
   public networkContext: cf.network.NetworkContext;
 

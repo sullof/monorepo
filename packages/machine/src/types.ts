@@ -1,8 +1,8 @@
 import * as cf from "@counterfactual/cf.js";
+import { Node } from "@counterfactual/node";
 
 import { Context } from "./instruction-executor";
 import { Opcode } from "./instructions";
-import { NodeState } from "./node-state";
 
 /**
  * The return value from the STATE_TRANSITION_PROPOSE middleware.
@@ -20,7 +20,7 @@ export interface ContextualizedStateProposer {
   propose(
     message: InternalMessage,
     context: Context,
-    nodeState: NodeState
+    node: Node
   ): StateProposal;
 }
 

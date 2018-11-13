@@ -1,17 +1,17 @@
 import * as cf from "@counterfactual/cf.js";
+import { Node, StateChannelInfoImpl } from "@counterfactual/node";
 
 import { Context } from "../../instruction-executor";
-import { NodeState, StateChannelInfoImpl } from "../../node-state";
 import { InternalMessage, StateProposal } from "../../types";
 
 export class UninstallProposer {
   public static propose(
     message: InternalMessage,
     context: Context,
-    nodeState: NodeState
+    node: Node
   ): StateProposal {
     const multisig: cf.utils.Address = message.clientMessage.multisigAddress;
-    const channels = nodeState.stateChannelInfosCopy();
+    const channels = node.stateChannelInfosCopy();
     const appId = message.clientMessage.appId;
     if (appId === undefined) {
       throw new Error("uninstall message must have appId set");

@@ -1,9 +1,9 @@
 import * as cf from "@counterfactual/cf.js";
+import { Node, StateChannelInfoImpl } from "@counterfactual/node";
 import { ethers } from "ethers";
 
 import { Context } from "../../instruction-executor";
 import { Opcode } from "../../instructions";
-import { NodeState, StateChannelInfoImpl } from "../../node-state";
 import { InternalMessage, StateProposal } from "../../types";
 import { getLastResult } from "../middleware";
 
@@ -11,7 +11,7 @@ export class InstallProposer {
   public static propose(
     message: InternalMessage,
     context: Context,
-    nodeState: NodeState
+    node: Node
   ): StateProposal {
     const multisig: cf.utils.Address = message.clientMessage.multisigAddress;
     const data: cf.app.InstallData = message.clientMessage.data;
@@ -28,17 +28,17 @@ export class InstallProposer {
       data.terms.limit,
       data.terms.token
     );
-    const uniqueId = InstallProposer.nextUniqueId(nodeState, multisig);
+    const uniqueId = InstallProposer.nextUniqueId(node, multisig);
     const signingKeys = InstallProposer.newSigningKeys(context, data);
     const cfAddr = InstallProposer.proposedCfAddress(
-      nodeState,
+      node,
       message,
       app,
       terms,
       signingKeys,
       uniqueId
     );
-    const existingFreeBalance = nodeState.stateChannel(multisig).freeBalance;
+    const existingFreeBalance = node.stateChannel(multisig).freeBalance;
     const newAppInstance = InstallProposer.newAppInstance(
       cfAddr,
       data,
@@ -119,7 +119,7 @@ export class InstallProposer {
   }
 
   private static proposedCfAddress(
-    nodeState: NodeState,
+    node: Node,
     message: InternalMessage,
     app: cf.app.AppInterface,
     terms: cf.app.Terms,
@@ -127,7 +127,7 @@ export class InstallProposer {
     uniqueId: number
   ): cf.utils.H256 {
     return new cf.app.AppInstance(
-      nodeState.networkContext,
+      node.networkContext,
       message.clientMessage.multisigAddress,
       signingKeys,
       app,
@@ -152,11 +152,8 @@ export class InstallProposer {
     return [peerA, peerB];
   }
 
-  private static nextUniqueId(
-    state: NodeState,
-    multisig: cf.utils.Address
-  ): number {
-    const channel = state.channelStates[multisig];
+  private static nextUniqueId(node: Node, multisig: cf.utils.Address): number {
+    const channel = node.channelStates[multisig];
     // + 1 for the free balance
     return Object.keys(channel.appInstances).length + 1;
   }

@@ -10,7 +10,10 @@ import { TestResponseSink } from "./test-response-sink";
  * and asserting the internally stored state was correctly modified.
  */
 export class SetupProtocol {
-  public static async validateAndRun(peerA: TestResponseSink, peerB: TestResponseSink) {
+  public static async validateAndRun(
+    peerA: TestResponseSink,
+    peerB: TestResponseSink
+  ) {
     SetupProtocol.validatePresetup(peerA, peerB);
     await SetupProtocol.run(peerA, peerB);
     SetupProtocol.validatePostsetup(peerA, peerB);
@@ -26,9 +29,9 @@ export class SetupProtocol {
     console.log("printing everything");
     console.log(peerA);
     console.log(peerA.instructionExecutor);
-    console.log(peerA.instructionExecutor.nodeState);
-    expect(peerA.instructionExecutor.nodeState.channelStates).toEqual({});
-    expect(peerB.instructionExecutor.nodeState.channelStates).toEqual({});
+    console.log(peerA.instructionExecutor.node);
+    expect(peerA.instructionExecutor.node.channelStates).toEqual({});
+    expect(peerB.instructionExecutor.node.channelStates).toEqual({});
     console.log("passed...");
   }
 
@@ -51,7 +54,10 @@ export class SetupProtocol {
   /**
    * Asserts the setup protocol modifies the internally stored state correctly.
    */
-  public static validatePostsetup(peerA: TestResponseSink, peerB: TestResponseSink) {
+  public static validatePostsetup(
+    peerA: TestResponseSink,
+    peerB: TestResponseSink
+  ) {
     SetupProtocol.validateWallet(
       peerA,
       peerB,
@@ -77,7 +83,7 @@ export class SetupProtocol {
   ) {
     // TODO: add nonce and uniqueId params and check them
     // https://github.com/counterfactual/monorepo/issues/111
-    const state = peerA.instructionExecutor.nodeState;
+    const state = peerA.instructionExecutor.node;
     const canon = cf.utils.PeerBalance.balances(
       peerA.signingKey.address,
       amountA,
@@ -85,7 +91,7 @@ export class SetupProtocol {
       amountB
     );
     const channel =
-      peerA.instructionExecutor.nodeState.channelStates[UNUSED_FUNDED_ACCOUNT];
+      peerA.instructionExecutor.node.channelStates[UNUSED_FUNDED_ACCOUNT];
     expect(Object.keys(state.channelStates).length).toEqual(1);
     expect(channel.counterParty).toEqual(peerB.signingKey.address);
     expect(channel.me).toEqual(peerA.signingKey.address);

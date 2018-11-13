@@ -1,11 +1,11 @@
 import * as cf from "@counterfactual/cf.js";
+import { Node, StateChannelInfoImpl } from "@counterfactual/node";
 import { ethers } from "ethers";
 
 import { Context } from "../../src/instruction-executor";
 import { Opcode } from "../../src/instructions";
 import { InstallProposer } from "../../src/middleware/state-transition/install-proposer";
 import { SetupProposer } from "../../src/middleware/state-transition/setup-proposer";
-import { NodeState, StateChannelInfoImpl } from "../../src/node-state";
 import { InternalMessage } from "../../src/types";
 
 import {
@@ -75,7 +75,7 @@ function setupClientMsg(): cf.node.ClientActionMessage {
   };
 }
 
-function setupInstallState(): NodeState {
+function setupInstallState(): Node {
   const freeBalance = new cf.utils.FreeBalance(
     A_ADDRESS,
     ethers.utils.bigNumberify(20),
@@ -96,7 +96,7 @@ function setupInstallState(): NodeState {
   const channelStates: cf.channel.StateChannelInfos = {
     [UNUSED_FUNDED_ACCOUNT]: info
   };
-  return new NodeState(channelStates, cf.network.EMPTY_NETWORK_CONTEXT);
+  return new Node(channelStates, cf.network.EMPTY_NETWORK_CONTEXT);
 }
 
 function validateSetupInfos(infos: cf.channel.StateChannelInfos) {
