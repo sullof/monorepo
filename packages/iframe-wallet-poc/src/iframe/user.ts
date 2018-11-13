@@ -7,8 +7,6 @@ import { CommitmentStore } from "../commitmentStore";
 import { IframeIoProvider } from "./ioProvider";
 import { IFrameWallet } from "./wallet";
 
-import { instructions } from "@counterfactual/machine";
-
 export let ganacheURL;
 
 try {
@@ -154,7 +152,7 @@ export class User implements machine.mixins.Observable, cf.node.ResponseSink {
   }
 
   public generateObserverNotification(notification: cf.node.Notification): any {
-    return notification.data.results.find(result => result.opCode === instructions.Opcode.STATE_TRANSITION_PROPOSE).value;
+    return notification.data.proposedStateTransition;
   }
 
   public addObserver(message: cf.node.ClientActionMessage) {
