@@ -207,9 +207,7 @@ export class User implements machine.mixins.Observable, cf.node.ResponseSink {
 
     this.instructionExecutor.register(
       machine.instructions.Opcode.OP_SIGN,
-      (
-        message, next, context: machine.instructionExecutor.Context
-      ) => {
+      (message, next, context: machine.instructionExecutor.Context) => {
         return signMyUpdate(context, this);
       }
     );
