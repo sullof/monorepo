@@ -26,8 +26,11 @@ export class Middleware {
     [Opcode.IO_PREPARE_SEND]: [
       {
         scope: Opcode.IO_PREPARE_SEND,
-        method: (internalMessage, next, context) =>
-          NextMsgGenerator.generate(internalMessage, context)
+        method: (internalMessage, next, context) => {
+          const ret = NextMsgGenerator.generate(internalMessage, context);
+          context.intermediateResults.outbox = ret;
+          return ret;
+        }
       }
     ],
     [Opcode.IO_SEND]: [],

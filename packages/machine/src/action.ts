@@ -98,7 +98,6 @@ export class ActionExecution {
 
       return { value, done: false };
     } catch (e) {
-      throw Error("");
       throw Error(
         `While executing op ${Opcode[internalMessage.opCode]} at seq ${
           this.clientMessage.seq
