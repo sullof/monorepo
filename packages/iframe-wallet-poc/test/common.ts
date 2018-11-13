@@ -25,7 +25,10 @@ export const EMPTY_NETWORK_CONTEXT = new cf.network.NetworkContext(
  * and asserting the machine state was correctly modified.
  */
 export class SetupProtocol {
-  public static async validateAndRun(walletA: IFrameWallet, walletB: IFrameWallet) {
+  public static async validateAndRun(
+    walletA: IFrameWallet,
+    walletB: IFrameWallet
+  ) {
     SetupProtocol.validatePresetup(walletA, walletB);
     await SetupProtocol.run(walletA, walletB);
     SetupProtocol.validatePostsetup(walletA, walletB);
@@ -35,12 +38,12 @@ export class SetupProtocol {
    * Asserts the state of the given wallets is empty.
    */
   public static validatePresetup(walletA: IFrameWallet, walletB: IFrameWallet) {
-    expect(
-      walletA.currentUser.instructionExecutor.nodeState.channelStates
-    ).toEqual({});
-    expect(
-      walletB.currentUser.instructionExecutor.nodeState.channelStates
-    ).toEqual({});
+    expect(walletA.currentUser.instructionExecutor.node.channelStates).toEqual(
+      {}
+    );
+    expect(walletB.currentUser.instructionExecutor.node.channelStates).toEqual(
+      {}
+    );
   }
 
   public static setupStartMsg(
@@ -62,7 +65,10 @@ export class SetupProtocol {
   /**
    * Asserts the setup protocol modifies the machine state correctly.
    */
-  public static validatePostsetup(walletA: IFrameWallet, walletB: IFrameWallet) {
+  public static validatePostsetup(
+    walletA: IFrameWallet,
+    walletB: IFrameWallet
+  ) {
     SetupProtocol.validateWallet(
       walletA,
       walletB,
@@ -87,7 +93,7 @@ export class SetupProtocol {
     amountB: ethers.utils.BigNumber
   ) {
     // TODO: add nonce and uniqueId params and check them
-    const state = walletA.currentUser.instructionExecutor.nodeState;
+    const state = walletA.currentUser.instructionExecutor.node;
     const canon = cf.utils.PeerBalance.balances(
       walletA.currentUser.address,
       amountA,
@@ -95,7 +101,7 @@ export class SetupProtocol {
       amountB
     );
     const channel =
-      walletA.currentUser.instructionExecutor.nodeState.channelStates[
+      walletA.currentUser.instructionExecutor.node.channelStates[
         UNUSED_FUNDED_ACCOUNT
       ];
     expect(Object.keys(state.channelStates).length).toEqual(1);
