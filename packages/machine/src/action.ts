@@ -90,16 +90,21 @@ export class ActionExecution {
         context
       );
       this.instructionPointer += 1;
+
+      // push modified value of `context.intermediateResults`
+      this.intermediateResults = context.intermediateResults;
+
+      // push return value onto results2
       this.results2.push({ value, opCode: internalMessage.opCode });
 
       return { value, done: false };
     } catch (e) {
       throw Error('');
-      // throw Error(
-      //   `While executing op ${Opcode[internalMessage.opCode]} at seq ${
-      //     this.clientMessage.seq
-      //   }, execution failed with the following error. ${e.stack}`
-      // );
+      throw Error(
+        `While executing op ${Opcode[internalMessage.opCode]} at seq ${
+          this.clientMessage.seq
+        }, execution failed with the following error. ${e.stack}`
+      );
     }
   }
 

@@ -114,13 +114,11 @@ export class IframeIoProvider {
       machine.instructions.Opcode.IO_PREPARE_SEND,
       context.results2
     );
-    // FIXME: (ts-strict) msg should never be null here
     const value = msg.value;
 
     if (this.clientHandlesIO) {
       this.user.sendIoMessageToClient(value);
     } else {
-      // Hack for testing and demo purposes, full IO handling by client goes here
       this.peer.receiveMessageFromPeer(value);
     }
   }

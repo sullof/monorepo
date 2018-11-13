@@ -23,7 +23,10 @@ export class Middleware {
    */
   public middlewares: InstructionMiddlewares = {
     [Opcode.ALL]: [],
-    [Opcode.IO_PREPARE_SEND]: [],
+    [Opcode.IO_PREPARE_SEND]: [{
+      scope: Opcode.IO_PREPARE_SEND,
+      method: (internalMessage, next, context) => NextMsgGenerator.generate(internalMessage, context)
+    }],
     [Opcode.IO_SEND]: [],
     [Opcode.IO_WAIT]: [],
     [Opcode.KEY_GENERATE]: [],
@@ -59,7 +62,6 @@ export class Middleware {
     );
     this.add(Opcode.KEY_GENERATE, KeyGenerator.generate);
     this.add(Opcode.OP_SIGN_VALIDATE, SignatureValidator.validate);
-    this.add(Opcode.IO_PREPARE_SEND, NextMsgGenerator.generate);
   }
 
   public add(scope: Opcode, method: InstructionMiddlewareCallback) {
@@ -126,7 +128,6 @@ export abstract class OpGenerator {
 export class NextMsgGenerator {
   public static generate(
     internalMessage: InternalMessage,
-    next: Function,
     context: Context
   ) {
     const signature = NextMsgGenerator.signature(internalMessage, context);
