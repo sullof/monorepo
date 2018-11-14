@@ -113,7 +113,8 @@ export class TestIOProvider {
 
   public async waitForIo(
     message: InternalMessage,
-    next: Function
+    next: Function,
+    context: Context
   ): Promise<cf.node.ClientActionMessage> {
     // Has websocket received a message for this appId/multisig
     // If yes, return the message, if not wait until it does
@@ -142,7 +143,8 @@ export class TestIOProvider {
 
     this.listenOnce(
       msg => {
-        resolve(msg);
+        context.intermediateResults.inbox = msg;
+        resolve();
       },
       multisig,
       appId

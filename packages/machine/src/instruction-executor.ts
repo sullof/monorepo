@@ -160,6 +160,7 @@ export interface IntermediateResults {
   proposedStateTransition?: StateProposal;
   operation?: ProtocolOperation;
   signature?: ethers.utils.Signature;
+  inbox?: cf.node.ClientActionMessage;
 }
 
 export class Context {

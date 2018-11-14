@@ -209,21 +209,15 @@ export class CommitmentStore {
     context: machine.instructionExecutor.Context
   ): cf.node.ClientActionMessage | null {
     if (internalMessage.actionName === cf.node.ActionName.INSTALL) {
-      return machine.middleware.getLastResult(
-        machine.instructions.Opcode.IO_WAIT,
-        context.results2
-      ).value;
+      return context.intermediateResults.inbox!;
     }
-    const incomingMessageResult = machine.middleware.getLastResult(
-      machine.instructions.Opcode.IO_WAIT,
-      context.results2
-    );
-    if (JSON.stringify(incomingMessageResult) === JSON.stringify({})) {
+    const incomingMessageResult = context.intermediateResults.inbox!;
+    if (this.incomingMessage === undefined) {
       // receiver since non installs should have no io_WAIT
       return internalMessage.clientMessage;
     }
     // sender so grab out the response
-    return incomingMessageResult.value;
+    return incomingMessageResult;
   }
 
   /**
