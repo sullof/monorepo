@@ -175,7 +175,7 @@ export class NextMsgGenerator {
     ) {
       return undefined;
     }
-    return getFirstResult(Opcode.OP_SIGN, context.results2).value;
+    return context.intermediateResults.signature!;
   }
 }
 
@@ -210,17 +210,8 @@ export class SignatureValidator {
 }
 
 /**
- * Utilitiy for middleware to access return values of other middleware.
+ * Utility for middleware to access return values of other middleware.
  */
-export function getFirstResult(
-  toFindOpCode: Opcode,
-  results: OpCodeResult[]
-): OpCodeResult {
-  // FIXME: (ts-strict) we should change the results data structure or design
-  // https://github.com/counterfactual/monorepo/issues/115
-  return results.find(({ opCode, value }) => opCode === toFindOpCode)!;
-}
-
 export function getLastResult(
   toFindOpCode: Opcode,
   results: OpCodeResult[]

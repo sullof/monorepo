@@ -1,5 +1,7 @@
 import * as cf from "@counterfactual/cf.js";
 
+import { ethers } from "ethers";
+
 import { ActionExecution, instructionGroupFromProtocolName } from "./action";
 import { Opcode } from "./instructions";
 import { Middleware } from "./middleware/middleware";
@@ -158,6 +160,7 @@ export interface IntermediateResults {
   outbox?: cf.node.ClientActionMessage;
   proposedStateTransition?: StateProposal;
   operation?: ProtocolOperation;
+  signature?: ethers.utils.Signature;
 }
 
 export class Context {
