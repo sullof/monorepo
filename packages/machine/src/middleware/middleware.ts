@@ -39,7 +39,9 @@ export class Middleware {
     [Opcode.OP_GENERATE]: [{
       scope: Opcode.OP_GENERATE,
       method: (message, next, context) => {
-        return EthOpGenerator.generate(message, next, context, this.nodeState);
+        const operation = EthOpGenerator.generate(message, next, context, this.nodeState);
+        context.intermediateResults.operation = operation;
+        return operation;
       }
     }],
     [Opcode.OP_SIGN]: [],
