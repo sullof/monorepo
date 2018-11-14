@@ -1,5 +1,5 @@
 import * as cf from "@counterfactual/cf.js";
-
+import { ProtocolOperation } from "@counterfactual/machine/src/middleware/protocol-operation/types";
 import { ethers } from "ethers";
 
 import { ActionExecution, instructionGroupFromProtocolName } from "./action";
@@ -14,7 +14,6 @@ import {
   StateProposal
 } from "./types";
 import { Log } from "./write-ahead-log";
-import { ProtocolOperation } from "@counterfactual/machine/src/middleware/protocol-operation/types";
 
 export class InstructionExecutorConfig {
   constructor(

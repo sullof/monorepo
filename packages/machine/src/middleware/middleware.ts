@@ -36,23 +36,32 @@ export class Middleware {
     [Opcode.IO_SEND]: [],
     [Opcode.IO_WAIT]: [],
     [Opcode.KEY_GENERATE]: [],
-    [Opcode.OP_GENERATE]: [{
-      scope: Opcode.OP_GENERATE,
-      method: (message, next, context) => {
-        const operation = EthOpGenerator.generate(message, next, context, this.nodeState);
-        context.intermediateResults.operation = operation;
+    [Opcode.OP_GENERATE]: [
+      {
+        scope: Opcode.OP_GENERATE,
+        method: (message, next, context) => {
+          const operation = EthOpGenerator.generate(
+            message,
+            next,
+            context,
+            this.nodeState
+          );
+          context.intermediateResults.operation = operation;
+        }
       }
-    }],
+    ],
     [Opcode.OP_SIGN]: [],
     [Opcode.OP_SIGN_VALIDATE]: [],
-    [Opcode.STATE_TRANSITION_COMMIT]: [{
-      scope: Opcode.STATE_TRANSITION_COMMIT,
-      method: (message, next, context) => {
-        const newState = context.intermediateResults.proposedStateTransition!;
-        context.instructionExecutor.mutateState(newState.state);
-        next();
+    [Opcode.STATE_TRANSITION_COMMIT]: [
+      {
+        scope: Opcode.STATE_TRANSITION_COMMIT,
+        method: (message, next, context) => {
+          const newState = context.intermediateResults.proposedStateTransition!;
+          context.instructionExecutor.mutateState(newState.state);
+          next();
+        }
       }
-    }],
+    ],
     [Opcode.STATE_TRANSITION_PROPOSE]: [
       {
         scope: Opcode.STATE_TRANSITION_PROPOSE,
