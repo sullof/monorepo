@@ -8,7 +8,6 @@ import {
   InstructionMiddlewareCallback,
   InstructionMiddlewares,
   InternalMessage,
-  OpCodeResult
 } from "../types";
 
 import { EthOpGenerator } from "./protocol-operation";
@@ -164,9 +163,7 @@ export class NextMsgGenerator {
     context: Context
   ) {
     const res = context.intermediateResults.inbox!;
-    return res === undefined
-      ? internalMessage.clientMessage
-      : res;
+    return res === undefined ? internalMessage.clientMessage : res;
   }
 
   public static signature(
