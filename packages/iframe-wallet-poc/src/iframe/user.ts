@@ -259,10 +259,7 @@ async function validateSignatures(
   context: machine.instructionExecutor.Context,
   user: User
 ) {
-  const operation: machine.protocolTypes.ProtocolOperation = machine.middleware.getFirstResult(
-    machine.instructions.Opcode.OP_GENERATE,
-    context.results2
-  ).value;
+  const operation = context.intermediateResults.operation!;
   const digest = operation.hashToSign();
   let sig;
   const expectedSigningAddress =
