@@ -7,7 +7,7 @@ import { NodeState } from "../node-state";
 import {
   InstructionMiddlewareCallback,
   InstructionMiddlewares,
-  InternalMessage,
+  InternalMessage
 } from "../types";
 
 import { EthOpGenerator } from "./protocol-operation";
