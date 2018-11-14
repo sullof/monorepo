@@ -41,7 +41,6 @@ export class Middleware {
       method: (message, next, context) => {
         const operation = EthOpGenerator.generate(message, next, context, this.nodeState);
         context.intermediateResults.operation = operation;
-        return operation;
       }
     }],
     [Opcode.OP_SIGN]: [],
